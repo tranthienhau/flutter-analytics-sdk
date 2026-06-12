@@ -10,9 +10,15 @@ import '../models/user_properties.dart';
 /// Every public method is wrapped in try/catch for graceful degradation
 /// when Firebase is not configured.
 class FirebaseAnalyticsService {
-  FirebaseAnalyticsService() : _analytics = FirebaseAnalytics.instance;
+  /// Default constructor used in production. Resolves the Firebase Analytics
+  /// singleton lazily so that simply constructing the service does not require
+  /// Firebase to be initialized (useful for tests / screenshot tooling).
+  FirebaseAnalyticsService();
 
-  final FirebaseAnalytics _analytics;
+  FirebaseAnalytics get _analytics =>
+      _injected ?? FirebaseAnalytics.instance;
+
+  FirebaseAnalytics? _injected;
   bool _initialized = false;
 
   // ------------------------------------------------------------------
